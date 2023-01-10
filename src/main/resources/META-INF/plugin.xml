@@ -1,18 +1,28 @@
 <!-- Plugin Configuration File. Read more: https://plugins.jetbrains.com/docs/intellij/plugin-configuration-file.html -->
 <idea-plugin>
     <id>com.github.tandrews.gptest</id>
-    <name>IntelliJ Platform Plugin GPTest</name>
+    <name>GPTest</name>
     <vendor>t-andrews</vendor>
+    <version>0.0.1</version>
 
     <depends>com.intellij.modules.platform</depends>
 
     <extensions defaultExtensionNs="com.intellij">
-        <applicationService serviceImplementation="com.github.tandrews.gptest.services.MyApplicationService"/>
-        <projectService serviceImplementation="com.github.tandrews.gptest.services.MyProjectService"/>
     </extensions>
 
-    <applicationListeners>
-        <listener class="com.github.tandrews.gptest.listeners.MyProjectManagerListener"
-                  topic="com.intellij.openapi.project.ProjectManagerListener"/>
-    </applicationListeners>
+    <actions>
+        <group
+                id="GPTestActions"
+                text="GPTest"
+                popup="true"
+                icon="/pluginIcon.svg"
+        />
+        <action id="GenerateUnitTests"
+                class="com.github.tandrews.gptest.actions.GenerateUnitTestAction"
+                text="Generate Unit Tests"
+                icon="/pluginIcon.svg"
+        >
+            <add-to-group group-id="GPTestActions" anchor="first"/>
+        </action>
+    </actions>
 </idea-plugin>
