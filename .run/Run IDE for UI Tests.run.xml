@@ -2,11 +2,6 @@
   <configuration default="false" name="Run IDE for UI Tests" type="GradleRunConfiguration" factoryName="Gradle">
     <log_file alias="idea.log" path="$PROJECT_DIR$/build/idea-sandbox/system/log/idea.log" />
     <ExternalSystemSettings>
-      <option name="env">
-        <map>
-          <entry key="OPEN_API_KEY" value="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 " />
-        </map>
-      </option>
       <option name="executionName" />
       <option name="externalProjectPath" value="$PROJECT_DIR$" />
       <option name="externalSystemIdString" value="GRADLE" />
