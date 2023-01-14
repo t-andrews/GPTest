@@ -1,6 +1,8 @@
 package com.github.tandrews.gptest.dialogs
 
+import com.github.tandrews.gptest.notifications.Notifier
 import com.github.tandrews.gptest.services.TestCreationService
+import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.editor.Document
 import com.intellij.openapi.fileChooser.FileChooserDescriptor
 import com.intellij.openapi.fileEditor.FileDocumentManager
@@ -11,8 +13,6 @@ import com.intellij.openapi.progress.Task
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.ui.DialogWrapper
 import com.intellij.openapi.vfs.VirtualFile
-import com.intellij.ui.components.textFieldWithBrowseButton
-import com.intellij.ui.components.textFieldWithHistoryWithBrowseButton
 import com.intellij.ui.dsl.builder.panel
 import com.intellij.util.ui.JBUI
 import kotlinx.coroutines.runBlocking
@@ -74,14 +74,10 @@ class GenerateUnitTestDialog(p: Project) : DialogWrapper(p, true) {
                 label("Source file:")
                 textFieldWithBrowseButton(fileChooserDescriptor = sourceFileDescriptor, project = project, fileChosen = sourceFileChosen)
             }
-
             row {
-                label("Test file:  ")
+                label("Test file:                 ")
                 textFieldWithBrowseButton(fileChooserDescriptor = testFileDescriptor, project = project, fileChosen = testFileChosen)
             }
-
-        }.apply {
-            preferredSize = JBUI.size(WIDTH, HEIGHT)
         }
     }
 
@@ -90,9 +86,22 @@ class GenerateUnitTestDialog(p: Project) : DialogWrapper(p, true) {
             override fun run(progressIndicator: ProgressIndicator) {
                 progressIndicator.isIndeterminate = true
                 progressIndicator.text = "Generating unit tests"
-//                runBlocking {
-//                    TestCreationService().generateTest(sourceFile!!.inputStream.bufferedReader().use { br -> br.readText() })
-//                }
+                runBlocking {
+                    val generatedTests = TestCreationService().generateTest(sourceFile!!.inputStream.bufferedReader().use { br -> br.readText() })
+                    val application = ApplicationManager.getApplication()
+                    val writeTestsToFile = Runnable {
+                        testFile!!.isWritable = true;
+                        val outputStream = testFile!!.getOutputStream(null)
+                        outputStream.write(generatedTests.toByteArray())
+                        outputStream.close()
+                        Notifier().notifyTestsGenerated(project, testFile!!)
+                    }
+                    if (application.isDispatchThread) {
+                        application.runWriteAction(writeTestsToFile)
+                    } else {
+                        application.invokeLater { application.runWriteAction(writeTestsToFile) }
+                    }
+                }
                 progressIndicator.text = "Done"
                 // TODO: link to generated tests file
             }

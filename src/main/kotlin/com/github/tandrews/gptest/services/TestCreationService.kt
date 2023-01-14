@@ -92,7 +92,8 @@ class TestCreationService {
                     "            expect(taskSucceededStub.called).to.equal(false, 'taskSucceeded should not be called');\n" +
                     "        });\n" +
                     "    });\n" +
-                    "});",
+                    "});" +
+                    "\nInclude assumed import statements",
             temperature = 0.5,
             maxTokens = 2048,
             topP = 1.0,
