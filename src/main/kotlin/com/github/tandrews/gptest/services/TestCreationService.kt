@@ -6,11 +6,7 @@ import com.aallam.openai.client.OpenAI
 import com.intellij.openapi.components.Service
 
 class TestCreationService {
-    private val openAi: OpenAI  = OpenAI(API_KEY)
-
-    companion object {
-        const val API_KEY = "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";
-    }
+    private val openAi: OpenAI = OpenAI(System.getenv("OPEN_API_KEY"))
 
     suspend fun generateTest(fileContent: String): String {
         val suggestedTest = openAi.completion(CompletionRequest(

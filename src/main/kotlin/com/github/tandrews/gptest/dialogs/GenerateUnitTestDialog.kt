@@ -14,7 +14,6 @@ import com.intellij.openapi.project.Project
 import com.intellij.openapi.ui.DialogWrapper
 import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.ui.dsl.builder.panel
-import com.intellij.util.ui.JBUI
 import kotlinx.coroutines.runBlocking
 import javax.swing.JComponent
 
@@ -32,11 +31,6 @@ class GenerateUnitTestDialog(p: Project) : DialogWrapper(p, true) {
         testFile = null
         myOKAction.isEnabled = false
         setOKButtonText("Generate")
-    }
-
-    companion object {
-        const val WIDTH = 1000
-        const val HEIGHT = 400
     }
 
     private fun getBaseSourceFile(): VirtualFile? {
@@ -71,11 +65,11 @@ class GenerateUnitTestDialog(p: Project) : DialogWrapper(p, true) {
             testFileDescriptor.description = "Choose the test file to save to"
 
             row {
-                label("Source file:")
+                label("Source file: ")
                 textFieldWithBrowseButton(fileChooserDescriptor = sourceFileDescriptor, project = project, fileChosen = sourceFileChosen)
             }
             row {
-                label("Test file:                 ")
+                label("Test file:   ")
                 textFieldWithBrowseButton(fileChooserDescriptor = testFileDescriptor, project = project, fileChosen = testFileChosen)
             }
         }
@@ -102,8 +96,6 @@ class GenerateUnitTestDialog(p: Project) : DialogWrapper(p, true) {
                         application.invokeLater { application.runWriteAction(writeTestsToFile) }
                     }
                 }
-                progressIndicator.text = "Done"
-                // TODO: link to generated tests file
             }
         })
         super.doOKAction()
